@@ -35,7 +35,7 @@ export const deleteNotifications = async (req, res) => {
     }
 }
 
-export const deleteOneNotifications = async (req, res) => {
+export const deleteOneNotification = async (req, res) => {
     try {
         const notificationId = req.params.id;
         const userId = req.user?._id;

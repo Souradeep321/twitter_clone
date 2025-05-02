@@ -79,8 +79,14 @@ export const commentOnPost = async (req, res) => {
         });
 
         await notification.save();
+        // TODO: send the newest Comment
+        const populatedComment = await Post.findById(post._id)
+            .select("comments")
+            .populate("comments.user", "fullName username profileImg");
 
-        res.status(200).json(post);
+        const latestComment = populatedComment.comments.at(-1);
+
+        res.status(200).json(latestComment );
     } catch (error) {
         console.log("Error in commentOnPost controller", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -116,7 +122,7 @@ export const likeUnlikePost = async (req, res) => {
                 type: "like"
             });
             await notification.save();
-            
+
             const updatedLikes = post.likes
             res.status(200).json(updatedLikes);
         }

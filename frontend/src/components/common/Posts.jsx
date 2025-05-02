@@ -2,19 +2,25 @@ import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-const Posts = ({ feedType }) => {
-
+const Posts = ({ feedType, username, userId }) => {
 	const getPostEndpoint = () => {
 		switch (feedType) {
 			case "forYou":
 				return "/api/v1/posts/all";
 			case "following":
 				return "/api/v1/posts/following";
+			case "posts":
+				return `/api/v1/posts/user/${username}`;
+			case "likes":
+				return `/api/v1/posts/likes/${userId}`;
 			default:
-				return "/api/v1/posts/all";
+				return "/api/posts/all";
 		}
 	};
+
+
 
 	const POST_ENDPOINT = getPostEndpoint();
 
@@ -36,7 +42,7 @@ const Posts = ({ feedType }) => {
 
 	useEffect(() => {
 		refetch();
-	}, [feedType,refetch]);
+	}, [feedType, refetch,username]);
 
 
 	return (
@@ -49,7 +55,7 @@ const Posts = ({ feedType }) => {
 				</div>
 			)}
 			{!isLoading && !isRefetching && posts?.length === 0 && <p className='text-center my-4'>No posts in this tab. Switch 👻</p>}
-			{!isLoading && !isRefetching  && posts && (
+			{!isLoading && !isRefetching && posts && (
 				<div>
 					{posts.map((post) => (
 						<Post key={post._id} post={post} />

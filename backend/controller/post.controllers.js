@@ -102,7 +102,9 @@ export const likeUnlikePost = async (req, res) => {
             // unlike the post
             await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
             await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
-            res.status(200).json({ message: "Post Unliked successfully" });
+
+            const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString());
+            res.status(200).json(updatedLikes);
         } else {
             post.likes.push(userId);
             await User.updateOne({ _id: userId }, { $push: { likedPosts: postId } });
@@ -113,9 +115,10 @@ export const likeUnlikePost = async (req, res) => {
                 to: post.user,
                 type: "like"
             });
-
             await notification.save();
-            res.status(200).json({ message: "Post Liked successfully" });
+            
+            const updatedLikes = post.likes
+            res.status(200).json(updatedLikes);
         }
     } catch (error) {
         console.log("Error in likeUnlikePost controller", error);
@@ -188,9 +191,9 @@ export const getFollowingPosts = async (req, res) => {
 
         res.status(200).json(feedPost);
     } catch (error) {
-    console.log("Error in getFollowingPosts controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
-}
+        console.log("Error in getFollowingPosts controller", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 }
 
 export const getUserPosts = async (req, res) => {
@@ -214,6 +217,6 @@ export const getUserPosts = async (req, res) => {
         res.status(200).json(posts);
     } catch (error) {
         console.log("Error in getUserPosts controller", error);
-        res.status(500).json({ error: "Internal Server Error" });        
+        res.status(500).json({ error: "Internal Server Error" });
     }
 }

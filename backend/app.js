@@ -7,7 +7,8 @@ const app = express()
 app.use(cors())
 
 // common middleware
-app.use(express.json({ limit: "16kb" }))
+app.use(express.json({ limit: "5mb" }))  // to parse req.body 
+// Limit shouldn't be too high to prevent Dos attack
 app.use(express.urlencoded({ extended: true, limit: "16kb" }))
 app.use(express.static("public"))
 app.use(cookieParser())

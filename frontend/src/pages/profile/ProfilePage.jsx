@@ -59,12 +59,14 @@ const ProfilePage = () => {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({ coverImg, profileImg }),
+					credentials: "include",
 				});
-				const data = await res.json();
-				if (!res.ok || data.error) {
-					throw new Error(data.error || "Something went wrong");
+				
+				if (!res.ok) {
+					const errorData = await res.json();
+					throw new Error(errorData.error || "Update failed");
 				}
-				return data;
+				return res.json();
 			} catch (error) {
 				throw new Error(error);
 			}

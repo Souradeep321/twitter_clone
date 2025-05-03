@@ -4,13 +4,14 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast"
 import LoadingSpinner from "./LoadingSpinner";
 import { formatPostDate } from "../../utils/date";
 
 const Post = ({ post }) => {
+	const navigate = useNavigate();
 	const [comment, setComment] = useState("");
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
@@ -213,13 +214,19 @@ const Post = ({ post }) => {
 												<div className='avatar'>
 													<div className='w-8 rounded-full'>
 														<img
-															src={comment.user.profileImg || "/avatar-placeholder.png"}
+															src={comment?.user?.profileImg || "/avatar-placeholder.png"}
+															onClick={() => navigate(`/profile/${comment?.user?.username}`)}
 														/>
 													</div>
 												</div>
 												<div className='flex flex-col'>
 													<div className='flex items-center gap-1'>
-														<span className='font-bold'>{comment.user.fullName}</span>
+														<span
+															className='font-bold cursor-pointer'
+															onClick={() => navigate(`/profile/${comment?.user?.username}`)}
+														>
+															{comment.user.fullName}
+														</span>
 														<span className='text-gray-700 text-sm'>
 															@{comment.user.username}
 														</span>

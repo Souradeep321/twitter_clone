@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import XSvg from "../../../components/svgs/X";
@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: "",
 		username: "",
@@ -53,6 +54,7 @@ const SignUpPage = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();  // page won't reload
 		mutate(formData);
+		navigate("/")
 	};
 
 	const handleInputChange = (e) => {

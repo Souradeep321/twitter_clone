@@ -4,11 +4,13 @@ import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
   const imgRef = useRef(null);
+  const navigate = useNavigate();
 
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
   const queryClient = useQueryClient();
@@ -62,7 +64,10 @@ const CreatePost = () => {
     <div className='flex p-4 items-start gap-4 border-b border-gray-700'>
       <div className='avatar'>
         <div className='w-8 rounded-full'>
-          <img src={authUser?.profileImg || "/avatar-placeholder.png"} />
+          <img 
+          src={authUser?.profileImg || "/avatar-placeholder.png"} 
+          onClick={() => navigate(`/profile/${authUser.username}`)}
+          />
         </div>
       </div>
       <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>

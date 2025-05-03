@@ -10,8 +10,8 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFollow from "../../hooks/UseFollow";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const ProfilePage = () => {
@@ -50,7 +50,7 @@ const ProfilePage = () => {
 	})
 
 	// updating the userProfile
-	const { mutate: updateUserProfile, isPending: isUpdatingProfile} = useMutation({
+	const { mutateAsync: updateUserProfile, isPending: isUpdatingProfile } = useMutation({
 		mutationFn: async ({ coverImg, profileImg }) => {
 			try {
 				const res = await fetch(`/api/v1/users/update`, {
@@ -74,13 +74,15 @@ const ProfilePage = () => {
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: ["authUser"] }),
 				queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-				queryClient.invalidateQueries({ queryKey: ["posts"] }),	
+				queryClient.invalidateQueries({ queryKey: ["posts"] }),
+				queryClient.invalidateQueries({ queryKey: ["notifications"] }),
 			])
 		},
 		onError: (error) => {
 			toast.error(error.message);
 		}
-	})
+	});
+
 
 
 	const isMyProfile = authUser?._id === user?._id;
@@ -171,7 +173,7 @@ const ProfilePage = () => {
 								</div>
 							</div>
 							<div className='flex justify-end px-4 mt-5'>
-								{isMyProfile && <EditProfileModal authUser={authUser}/>}
+								{isMyProfile && <EditProfileModal authUser={authUser} />}
 								{!isMyProfile && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
@@ -188,12 +190,13 @@ const ProfilePage = () => {
 								{(coverImg || profileImg) && (
 									<button
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
-										onClick={() => updateUserProfile({
-											coverImg,
-											profileImg,
-										})}
+										onClick={async () => {
+											await updateUserProfile({ coverImg, profileImg })
+											setProfileImg(null);
+											setCoverImg(null);
+										}}
 									>
-										{isUpdatingProfile ? "Updating...": "Update"}
+										{isUpdatingProfile ? "Updating..." : "Update"}
 									</button>
 								)}
 							</div>

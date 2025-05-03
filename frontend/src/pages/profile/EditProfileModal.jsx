@@ -1,9 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { use, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import {  useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import  toast  from "react-hot-toast";
 
-const EditProfileModal = ({authUser}) => {
+const EditProfileModal = ({ authUser }) => {
 	const queryClient = useQueryClient();
+
 
 	const [formData, setFormData] = useState({
 		fullName: "",
@@ -15,15 +16,15 @@ const EditProfileModal = ({authUser}) => {
 		currentPassword: "",
 	});
 
-	const { mutate: updateUserProfile, isPending: isUpdatingProfile} = useMutation({
-		mutationFn: async (formData) => {
+	const { mutateAsync: updateUserProfile, isPending: isUpdatingProfile} = useMutation({
+		mutationFn: async (fromData) => {
 			try {
 				const res = await fetch(`/api/v1/users/update`, {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify(formData),
+					body: JSON.stringify(fromData),
 				});
 				const data = await res.json();
 				if (!res.ok || data.error) {
@@ -45,9 +46,7 @@ const EditProfileModal = ({authUser}) => {
 		onError: (error) => {
 			toast.error(error.message);
 		}
-	})
-
-
+	});
 
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -55,7 +54,7 @@ const EditProfileModal = ({authUser}) => {
 
 
 	useEffect(() => {
-		if(authUser){
+		if (authUser) {
 			setFormData({
 				fullName: authUser.fullName,
 				username: authUser.username,
@@ -66,7 +65,7 @@ const EditProfileModal = ({authUser}) => {
 				currentPassword: "",
 			})
 		}
-	},[authUser])
+	}, [authUser])
 
 	return (
 		<>

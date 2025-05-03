@@ -14,10 +14,10 @@ const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
-	const postOwner = post.user;
+	const postOwner = post?.user;
 	const isLiked = post.likes.includes(authUser._id);
 
-	const isMyPost = authUser && authUser._id === post.user._id;
+	const isMyPost = authUser && authUser._id === post.user?._id;
 
 	const formattedDate = formatPostDate(post.createdAt);
 
@@ -49,7 +49,7 @@ const Post = ({ post }) => {
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/v1/posts/like/${post._id}`, {
+				const res = await fetch(`/api/v1/posts/like/${post?._id}`, {
 					method: "POST",
 				})
 
@@ -70,7 +70,7 @@ const Post = ({ post }) => {
 			// instead update the cash for directly updating the posts
 			queryClient.setQueryData(["posts"], (oldData) => {
 				return oldData.map((p) => {
-					if (p._id === post._id) {
+					if (p._id === post?._id) {
 						return { ...p, likes: updatedLikes };
 					}
 					return p;
@@ -109,7 +109,7 @@ const Post = ({ post }) => {
 			setComment("");
 			queryClient.setQueryData(["posts"], (oldData) => {
 				return oldData.map((p) => {
-					if (p._id === post._id) {
+					if (p._id === post?._id) {
 						return { ...p, comments: [...p.comments, newComment] };
 					}
 					return p;
@@ -145,23 +145,23 @@ const Post = ({ post }) => {
 			<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
 				<div className='avatar'>
 					<Link
-						to={`/profile/${postOwner.username}`}
+						to={`/profile/${postOwner?.username}`}
 						className='block w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 hover:opacity-90 transition duration-300'
 					>
 						<img
-							src={postOwner.profileImg || "/avatar-placeholder.png"}
-							alt={`${postOwner.username}'s avatar`}
+							src={postOwner?.profileImg || "/avatar-placeholder.png"}
+							alt={`${postOwner?.username}'s avatar`}
 							className='w-full h-full object-cover'
 						/>
 					</Link>
 				</div>
 				<div className='flex flex-col flex-1'>
 					<div className='flex gap-2 items-center'>
-						<Link to={`/profile/${postOwner.username}`} className='font-bold'>
-							{postOwner.fullName}
+						<Link to={`/profile/${postOwner?.username}`} className='font-bold'>
+							{postOwner?.fullName}
 						</Link>
 						<span className='text-gray-700 flex gap-1 text-sm'>
-							<Link to={`/profile/${postOwner.username}`}>@{postOwner.username}</Link>
+							<Link to={`/profile/${postOwner?.username}`}>@{postOwner?.username}</Link>
 							<span>·</span>
 							<span>{formattedDate}</span>
 						</span>

@@ -144,8 +144,15 @@ const Post = ({ post }) => {
 		<>
 			<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
 				<div className='avatar'>
-					<Link to={`/profile/${postOwner.username}`} className='w-8 rounded-full overflow-hidden'>
-						<img src={postOwner.profileImg || "/avatar-placeholder.png"} />
+					<Link
+						to={`/profile/${postOwner.username}`}
+						className='block w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 hover:opacity-90 transition duration-300'
+					>
+						<img
+							src={postOwner.profileImg || "/avatar-placeholder.png"}
+							alt={`${postOwner.username}'s avatar`}
+							className='w-full h-full object-cover'
+						/>
 					</Link>
 				</div>
 				<div className='flex flex-col flex-1'>

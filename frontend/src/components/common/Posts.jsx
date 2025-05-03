@@ -2,7 +2,6 @@ import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 const Posts = ({ feedType, username, userId }) => {
 	const getPostEndpoint = () => {
